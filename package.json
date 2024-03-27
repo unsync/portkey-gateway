@@ -1,6 +1,6 @@
 {
   "name": "@unsync/ai-gateway",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "A fast AI gateway by Portkey",
   "repository": {
     "type": "git",
