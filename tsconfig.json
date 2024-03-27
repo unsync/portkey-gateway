@@ -10,7 +10,6 @@
     "types": ["@cloudflare/workers-types", "node"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
-    "outDir": "dist",
-    "declaration": true
+    "outDir": "dist"
   }
 }
