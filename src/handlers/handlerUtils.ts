@@ -1,5 +1,5 @@
 import { Context } from "hono";
-import { AZURE_OPEN_AI, BEDROCK, CONTENT_TYPES, HEADER_KEYS, POWERED_BY, RESPONSE_HEADER_KEYS, RETRY_STATUS_CODES } from "../globals";
+import { AZURE_OPEN_AI, BEDROCK, WORKERS_AI, CONTENT_TYPES, HEADER_KEYS, POWERED_BY, RESPONSE_HEADER_KEYS, RETRY_STATUS_CODES } from "../globals";
 import Providers from "../providers";
 import { ProviderAPIConfig, endpointStrings } from "../providers/types";
 import transformToProviderRequest from "../services/transformToProviderRequest";
@@ -761,6 +761,10 @@ export function constructConfigFromRequestHeaders(
       awsRegion: requestHeaders[`x-${POWERED_BY}-aws-region`]
     }
 
+    const workersAiConfig = {
+      accountId: requestHeaders[`x-${POWERED_BY}-workers-ai-account-id`],
+    }
+
     if (
       requestHeaders[`x-${POWERED_BY}-config`]
     ) {
@@ -784,6 +788,13 @@ export function constructConfigFromRequestHeaders(
             }
           }
 
+          if (parsedConfigJson.provider === WORKERS_AI) {
+            parsedConfigJson = {
+              ...parsedConfigJson,
+              ...workersAiConfig
+            }
+          }
+
         }
         return convertKeysToCamelCase(
             parsedConfigJson,
@@ -795,7 +806,8 @@ export function constructConfigFromRequestHeaders(
       provider: requestHeaders[`x-${POWERED_BY}-provider`],
       apiKey: requestHeaders["authorization"]?.replace("Bearer ", ""),
       ...(requestHeaders[`x-${POWERED_BY}-provider`] === AZURE_OPEN_AI && azureConfig),
-      ...(requestHeaders[`x-${POWERED_BY}-provider`] === BEDROCK && bedrockConfig)
+      ...(requestHeaders[`x-${POWERED_BY}-provider`] === BEDROCK && bedrockConfig),
+      ...(requestHeaders[`x-${POWERED_BY}-provider`] === WORKERS_AI && workersAiConfig)
     };
 }
     
